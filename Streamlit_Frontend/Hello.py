@@ -1,17 +1,14 @@
 import streamlit as st
+from streamlit_navigation_bar import st_navbar
+from streamlit import session_state as ss
+import pages as pg
 
 st.set_page_config(
-    page_title="Hello",
+    page_title="Hello Everyone",
     page_icon="👋",
 )
 
-st.write("# Welcome to Diet Recommendation System! 👋")
-
-st.sidebar.success("Select a recommendation app.")
-
-st.markdown(
-    """
-    A diet recommendation web application using content-based approach with Scikit-Learn, FastAPI and Streamlit.
-    You can find more details and the whole project on my [repo](https://github.com/omsaiomsaiomsai/dieto).
-    """
-)
+st.write("# Welcome to Dieto! 👋")
+st.header(":red[Fuel Your Body, Nourish Your Soul.]")
+st.sidebar.page_link('Hello.py', label='Home')
+st.sidebar.page_link('pages/Login.py', label='Login')
