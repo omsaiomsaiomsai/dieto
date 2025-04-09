@@ -36,6 +36,23 @@ def recommend_exercises(health_conditions, age, gender, bmi, activity_level):
     elif age < 30 and bmi < 25 and activity_level > 1.5:
         intensity = "high"
     
+
+# Set page configuration and custom CSS
+st.set_page_config(
+    page_title="Personalized Food Recommendation System",
+    page_icon="🍎",
+    layout="wide"
+)
+
+# Custom CSS for white background
+st.markdown("""
+<style>
+    .stApp {
+        background-color: white;
+    }
+</style>
+""", unsafe_allow_html=True)
+
     # Check for health conditions that may require low-intensity exercises
     low_intensity_conditions = [
         "Heart Disease", "Hypertension", "Asthma", "Arthritis", 
@@ -155,12 +172,7 @@ def recommend_yoga_poses(health_conditions, age, bmi):
     
     return recommended_poses
 
-# Page configuration
-st.set_page_config(
-    page_title="Personalized Food Recommendation System",
-    page_icon="🍎",
-    layout="wide"
-)
+
 
 # Initialize session state variables if they don't exist
 if 'authenticated' not in st.session_state:
