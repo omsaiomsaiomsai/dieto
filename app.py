@@ -8,6 +8,17 @@ from auth import login, signup, is_authenticated, logout, get_current_user
 from data_preprocessing import load_data, preprocess_data
 from food_recommendation import generate_meal_plan
 from model import FoodRecommendationModel
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Set page configuration with theme options
+st.set_page_config(
+    page_title="Personalized Food Recommendation System",
+    page_icon="🍎",
+    layout="wide"
+)
 
 # Functions to recommend exercises and yoga poses
 def recommend_exercises(health_conditions, age, gender, bmi, activity_level):
@@ -36,23 +47,6 @@ def recommend_exercises(health_conditions, age, gender, bmi, activity_level):
     elif age < 30 and bmi < 25 and activity_level > 1.5:
         intensity = "high"
     
-
-# Set page configuration and custom CSS
-st.set_page_config(
-    page_title="Personalized Food Recommendation System",
-    page_icon="🍎",
-    layout="wide"
-)
-
-# Custom CSS for white background
-st.markdown("""
-<style>
-    .stApp {
-        background-color: white;
-    }
-</style>
-""", unsafe_allow_html=True)
-
     # Check for health conditions that may require low-intensity exercises
     low_intensity_conditions = [
         "Heart Disease", "Hypertension", "Asthma", "Arthritis", 
@@ -214,6 +208,50 @@ def render_navigation():
     with st.sidebar:
         st.image("generated-icon.png", width=100)
         st.title("FoodWise AI")
+        
+        # Theme selector
+        if 'theme' not in st.session_state:
+            st.session_state.theme = "light"
+            
+        # Theme toggle
+        theme_toggle = st.toggle("Dark Mode", value=(st.session_state.theme == "dark"))
+        
+        if theme_toggle:
+            st.session_state.theme = "dark"
+            # Apply dark theme CSS
+            st.markdown("""
+            <style>
+                .stApp {
+                    background-color: #262730;
+                    color: #FFFFFF;
+                }
+                .st-bq {
+                    background-color: #0E1117;
+                }
+                .st-c0 {
+                    color: #FFFFFF;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+        else:
+            st.session_state.theme = "light"
+            # Apply light theme CSS
+            st.markdown("""
+            <style>
+                .stApp {
+                    background-color: #FFFFFF;
+                    color: #262730;
+                }
+                .st-bq {
+                    background-color: #F0F8FF;
+                }
+                .st-c0 {
+                    color: #262730;
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+        st.markdown("---")
         
         # Navigation options based on authentication state
         if st.session_state.authenticated:
