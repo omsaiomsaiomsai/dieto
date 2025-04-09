@@ -81,14 +81,79 @@ def generate_meal_items(foods_df, user_data, num_items=2):
     Returns:
         list: List of meal items with nutritional information
     """
-    # Check for health conditions
+    # Get user's preferences and restrictions
     health_conditions = user_data.get('health_conditions', [])
+    dietary_preferences = user_data.get('dietary_preferences', [])
+    avoided_foods = user_data.get('avoided_foods', [])
     daily_calories = user_data.get('daily_calories', 2000)
     
-    # Filter foods based on health conditions
+    # Filter foods based on health conditions and dietary preferences
     filtered_foods = foods_df.copy()
     
-    # Apply filters based on health conditions (if we have that data)
+    # Handle dietary preferences
+    if 'Vegetarian' in dietary_preferences:
+        # Exclude foods with category containing meat
+        filtered_foods = filtered_foods[~filtered_foods['category'].str.contains('meat', case=False, na=False)]
+        # Exclude meat-based protein foods
+        meat_pattern = 'chicken|beef|pork|turkey|lamb'
+        protein_foods = filtered_foods['category'] == 'protein'
+        contains_meat = filtered_foods['name'].str.contains(meat_pattern, case=False, na=False)
+        filtered_foods = filtered_foods[~(protein_foods & contains_meat)]
+    
+    if 'Vegan' in dietary_preferences:
+        # Exclude animal products by category
+        filtered_foods = filtered_foods[~filtered_foods['category'].str.contains('meat|dairy', case=False, na=False)]
+        
+        # Exclude foods with animal products in the name
+        animal_pattern = 'milk|cheese|yogurt|egg|chicken|beef|pork|fish|turkey|lamb'
+        filtered_foods = filtered_foods[~filtered_foods['name'].str.contains(animal_pattern, case=False, na=False)]
+    
+    if 'Gluten-Free' in dietary_preferences:
+        # Exclude gluten-containing foods
+        filtered_foods = filtered_foods[~filtered_foods['name'].str.contains('wheat|bread|pasta|cereal', case=False, na=False)]
+        
+    if 'Dairy-Free' in dietary_preferences:
+        # Exclude dairy products
+        filtered_foods = filtered_foods[~filtered_foods['category'].str.contains('dairy', case=False, na=False)]
+        filtered_foods = filtered_foods[~filtered_foods['name'].str.contains('milk|cheese|yogurt', case=False, na=False)]
+    
+    # Handle foods to avoid
+    food_avoid_patterns = []
+    for food in avoided_foods:
+        if food == "Red Meat":
+            food_avoid_patterns.append('beef|steak|pork|lamb')
+        elif food == "Poultry":
+            food_avoid_patterns.append('chicken|turkey|duck')
+        elif food == "Seafood":
+            food_avoid_patterns.append('fish|salmon|tuna|cod|tilapia')
+        elif food == "Eggs":
+            food_avoid_patterns.append('egg')
+        elif food == "Dairy":
+            food_avoid_patterns.append('milk|cheese|yogurt')
+        elif food == "Gluten":
+            food_avoid_patterns.append('wheat|bread|pasta|cereal')
+        elif food == "Nuts":
+            food_avoid_patterns.append('nut|almond|peanut|walnut|cashew')
+        elif food == "Soy":
+            food_avoid_patterns.append('soy|tofu')
+        elif food == "Shellfish":
+            food_avoid_patterns.append('shrimp|crab|lobster')
+        elif food == "Spicy Foods":
+            food_avoid_patterns.append('spicy|chili|pepper')
+        elif food == "Processed Foods":
+            food_avoid_patterns.append('processed')
+        elif food == "Added Sugar":
+            food_avoid_patterns.append('sugar|sweet|dessert|candy')
+        else:
+            # Add custom foods to avoid (with exact matching)
+            food_avoid_patterns.append(food.lower())
+    
+    # Apply the filters for foods to avoid
+    if food_avoid_patterns:
+        combined_pattern = '|'.join(food_avoid_patterns)
+        filtered_foods = filtered_foods[~filtered_foods['name'].str.lower().str.contains(combined_pattern, case=False, na=False)]
+    
+    # Apply filters based on health conditions
     if 'Diabetes' in health_conditions and 'sugar' in filtered_foods.columns:
         filtered_foods = filtered_foods[filtered_foods['sugar'] < 10]
     

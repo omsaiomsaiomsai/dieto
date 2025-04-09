@@ -195,7 +195,30 @@ def render_meal_plan_page():
             options=yoga_list
         )
         
+        # Dietary preferences section
+        st.subheader("Dietary Preferences")
+        
+        # Dietary restrictions
+        dietary_restrictions = ["Vegetarian", "Vegan", "Pescatarian", "Gluten-Free", "Dairy-Free", 
+                                "Keto", "Paleo", "Low Carb", "Low Fat", "Low Sodium"]
+        selected_diet = st.multiselect(
+            "Select your dietary preferences:",
+            options=dietary_restrictions
+        )
+        
+        # Foods to avoid
+        food_categories = ["Red Meat", "Poultry", "Seafood", "Eggs", "Dairy", "Gluten", 
+                           "Nuts", "Soy", "Shellfish", "Spicy Foods", "Processed Foods", "Added Sugar"]
+        avoided_foods = st.multiselect(
+            "Select foods you want to avoid:",
+            options=food_categories
+        )
+        
+        # Additional custom foods to avoid
+        custom_avoided_foods = st.text_input("Any other specific foods you want to avoid? (comma-separated)")
+        
         # Additional information
+        st.subheader("Personal Information")
         age = st.slider("Age", 18, 100, 30)
         gender = st.selectbox("Gender", ["Male", "Female", "Other"])
         weight = st.number_input("Weight (kg)", min_value=30.0, max_value=200.0, value=70.0, step=0.1)
@@ -246,10 +269,17 @@ def render_meal_plan_page():
         if st.button("Generate Meal Plan", type="primary"):
             with st.spinner("Generating your personalized meal plan..."):
                 # Prepare input data for model
+                # Process custom avoided foods from text input
+                custom_foods_list = []
+                if custom_avoided_foods:
+                    custom_foods_list = [food.strip() for food in custom_avoided_foods.split(',') if food.strip()]
+                
                 input_data = {
                     'health_conditions': selected_conditions,
                     'exercises': selected_exercises,
                     'yoga_poses': selected_yoga,
+                    'dietary_preferences': selected_diet,
+                    'avoided_foods': avoided_foods + custom_foods_list,
                     'age': age,
                     'gender': gender,
                     'weight': weight,
