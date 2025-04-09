@@ -1,0 +1,11 @@
+condition,dietary_recommendation,foods_to_avoid
+Diabetes,"Focus on low glycemic index foods, high fiber, and consistent carbohydrate intake throughout the day. Include lean proteins and healthy fats.","Sugary foods, white bread, white rice, pastries, sweetened beverages, fruit juices"
+Hypertension,"Follow a DASH diet with reduced sodium, increased potassium, calcium, and magnesium. Include fruits, vegetables, whole grains, and lean proteins.","High sodium foods, processed meats, canned soups, pickled foods, salty snacks"
+Heart Disease,"Choose heart-healthy foods low in saturated and trans fats. Emphasize fruits, vegetables, whole grains, lean proteins, and foods rich in omega-3 fatty acids.","Fried foods, fatty meats, full-fat dairy, baked goods with trans fats, excessive salt"
+Obesity,"Focus on portion control and nutrient-dense foods with lower calorie density. Increase protein and fiber intake for satiety.","Sugary beverages, processed foods, high-calorie desserts, fried foods, refined carbohydrates"
+GERD (Acid Reflux),"Eat smaller, more frequent meals. Focus on alkaline foods and avoid eating close to bedtime.","Citrus fruits, tomatoes, spicy foods, fatty foods, chocolate, caffeine, alcohol"
+IBS (Irritable Bowel Syndrome),"Follow a low FODMAP diet if recommended by your healthcare provider. Stay hydrated and eat regular meals.","High FODMAP foods (varies by individual), very fatty foods, excessive caffeine, alcohol"
+Osteoporosis,"Consume adequate calcium and vitamin D. Include protein and magnesium-rich foods.","Excessive salt, caffeine, and alcohol can interfere with calcium absorption"
+Anemia,"Focus on iron-rich foods paired with vitamin C for better absorption. Include vitamin B12 and folate sources.","Foods that inhibit iron absorption when eaten with iron sources (tea, coffee, dairy)"
+Food Allergies,"Strictly avoid allergens and be vigilant about cross-contamination. Focus on nutritious alternatives.","Specific allergens (nuts, shellfish, dairy, eggs, etc. as relevant to the individual)"
+Celiac Disease,"Follow a strict gluten-free diet. Focus on naturally gluten-free grains like rice and quinoa.","All sources of gluten: wheat, barley, rye, and foods cross-contaminated with these grains"

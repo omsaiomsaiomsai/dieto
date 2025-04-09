@@ -1,0 +1,21 @@
+exercise_name,intensity,calories_burned,muscle_groups,duration_minutes,frequency_per_week,dietary_needs
+Walking,Low,100,Legs,30,7,Regular hydration
+Running,High,300,Legs,30,3-5,Complex carbs before; protein after
+Cycling,Moderate,250,Legs,30,3-5,Complex carbs; electrolytes for long rides
+Swimming,Moderate,250,Full body,30,3,Balanced nutrition; protein for recovery
+Weight Training,High,200,Varies by exercise,45,3-4,Protein-rich diet; adequate carbs
+Yoga,Low,150,Full body,60,2-5,Balanced nutrients; hydration
+Pilates,Moderate,175,Core,45,2-3,Protein for muscle recovery
+HIIT,Very High,400,Full body,20,2-3,Carbs before; protein and carbs after
+Elliptical Trainer,Moderate,270,Lower body,30,3-5,Balanced nutrients
+Rowing,High,300,Full body,30,2-4,Protein and carbs for recovery
+Dancing,Moderate,220,Full body,45,2-3,Regular hydration; balanced diet
+Rock Climbing,High,350,Full body,60,1-2,Protein for muscle strength; carbs for energy
+Kickboxing,High,450,Full body,60,2-3,Protein-rich diet; complex carbs
+Tai Chi,Low,120,Full body,45,2-4,Balanced diet
+Cross-Country Skiing,Very High,500,Full body,45,1-3,High carb diet; hydration
+Basketball,High,400,Full body,60,1-3,Hydration; balanced macronutrients
+Tennis,High,350,Full body,60,1-3,Carbs for energy; protein for recovery
+Hiking,Moderate,300,Lower body,120,1-2,Complex carbs; trail snacks; hydration
+Stair Climbing,High,300,Lower body,20,2-3,Protein for muscle recovery
+Jump Rope,High,300,Lower body,15,2-4,Balanced diet; adequate hydration
