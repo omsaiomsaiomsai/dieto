@@ -209,48 +209,22 @@ def render_navigation():
         st.image("generated-icon.png", width=100)
         st.title("FoodWise AI")
         
-        # Theme selector
-        if 'theme' not in st.session_state:
-            st.session_state.theme = "light"
-            
-        # Theme toggle
-        theme_toggle = st.toggle("Dark Mode", value=(st.session_state.theme == "dark"))
+        # Set permanent light mode
+        st.markdown("""
+        <style>
+            .stApp {
+                background-color: #FFFFFF;
+                color: #262730;
+            }
+            .st-bq {
+                background-color: #F0F8FF;
+            }
+            .st-c0 {
+                color: #262730;
+            }
+        </style>
+        """, unsafe_allow_html=True)
         
-        if theme_toggle:
-            st.session_state.theme = "dark"
-            # Apply dark theme CSS
-            st.markdown("""
-            <style>
-                .stApp {
-                    background-color: #262730;
-                    color: #FFFFFF;
-                }
-                .st-bq {
-                    background-color: #0E1117;
-                }
-                .st-c0 {
-                    color: #FFFFFF;
-                }
-            </style>
-            """, unsafe_allow_html=True)
-        else:
-            st.session_state.theme = "light"
-            # Apply light theme CSS
-            st.markdown("""
-            <style>
-                .stApp {
-                    background-color: #FFFFFF;
-                    color: #262730;
-                }
-                .st-bq {
-                    background-color: #F0F8FF;
-                }
-                .st-c0 {
-                    color: #262730;
-                }
-            </style>
-            """, unsafe_allow_html=True)
-            
         st.markdown("---")
         
         # Navigation options based on authentication state
