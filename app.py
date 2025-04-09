@@ -1,3 +1,21 @@
+
+# Set page configuration and custom CSS
+st.set_page_config(
+    page_title="Personalized Food Recommendation System",
+    page_icon="🍎",
+    layout="wide"
+)
+
+# Custom CSS for white background
+st.markdown("""
+<style>
+    .stApp {
+        background-color: white;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -36,23 +54,6 @@ def recommend_exercises(health_conditions, age, gender, bmi, activity_level):
     elif age < 30 and bmi < 25 and activity_level > 1.5:
         intensity = "high"
     
-
-# Set page configuration and custom CSS
-st.set_page_config(
-    page_title="Personalized Food Recommendation System",
-    page_icon="🍎",
-    layout="wide"
-)
-
-# Custom CSS for white background
-st.markdown("""
-<style>
-    .stApp {
-        background-color: white;
-    }
-</style>
-""", unsafe_allow_html=True)
-
     # Check for health conditions that may require low-intensity exercises
     low_intensity_conditions = [
         "Heart Disease", "Hypertension", "Asthma", "Arthritis", 
