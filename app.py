@@ -482,6 +482,58 @@ def render_meal_plan_page():
                                         st.write(item['portion'])
                         else:
                             st.write("No recommendations for this meal.")
+                
+                # Display total nutritional breakdown in the food tab
+                st.subheader("Daily Nutritional Summary")
+                
+                # Calculate total nutrition
+                total_calories = 0
+                total_protein = 0
+                total_carbs = 0
+                total_fat = 0
+                
+                # Only include meal types (breakfast, lunch, dinner, snacks) in nutritional calculations
+                food_meal_types = ['breakfast', 'lunch', 'dinner', 'snacks']
+                
+                for meal_type in food_meal_types:
+                    if meal_type in st.session_state.meal_plan:
+                        for item in st.session_state.meal_plan[meal_type]:
+                            total_calories += item['calories']
+                            total_protein += item['protein']
+                            total_carbs += item['carbs']
+                            total_fat += item['fat']
+                
+                # Display nutritional summary
+                col1, col2, col3, col4 = st.columns(4)
+                
+                with col1:
+                    st.metric("Total Calories", f"{total_calories:.0f} kcal", 
+                              f"{((total_calories/daily_calories)*100)-100:.1f}%" if daily_calories > 0 else "N/A")
+                
+                with col2:
+                    st.metric("Total Protein", f"{total_protein:.1f} g", 
+                              f"{(total_protein*4/total_calories*100):.1f}% of calories" if total_calories > 0 else "N/A")
+                
+                with col3:
+                    st.metric("Total Carbs", f"{total_carbs:.1f} g", 
+                              f"{(total_carbs*4/total_calories*100):.1f}% of calories" if total_calories > 0 else "N/A")
+                
+                with col4:
+                    st.metric("Total Fat", f"{total_fat:.1f} g", 
+                              f"{(total_fat*9/total_calories*100):.1f}% of calories" if total_calories > 0 else "N/A")
+                
+                # Display recommendations based on health conditions
+                if selected_conditions:
+                    st.subheader("Dietary Recommendations Based on Your Health Conditions")
+                    for condition in selected_conditions:
+                        condition_info = data['health_conditions'][data['health_conditions']['condition'] == condition]
+                        if not condition_info.empty:
+                            st.write(f"**{condition}**")
+                            st.write(condition_info.iloc[0]['dietary_recommendation'])
+                            
+                            # Foods to avoid
+                            if 'foods_to_avoid' in condition_info.columns and not pd.isna(condition_info.iloc[0]['foods_to_avoid']):
+                                st.warning(f"Foods to avoid: {condition_info.iloc[0]['foods_to_avoid']}")
             
             # Exercise recommendations tab
             with main_tabs[1]:
@@ -572,54 +624,7 @@ def render_meal_plan_page():
                 
                 if any(condition in selected_conditions for condition in ["Back Pain", "Arthritis", "Osteoporosis"]):
                     st.warning("Be gentle with your practice and use props for support when needed. Avoid poses that cause pain.")
-            
-            # Display total nutritional breakdown
-            st.subheader("Daily Nutritional Summary")
-            
-            # Calculate total nutrition
-            total_calories = 0
-            total_protein = 0
-            total_carbs = 0
-            total_fat = 0
-            
-            for meal_type in st.session_state.meal_plan:
-                for item in st.session_state.meal_plan[meal_type]:
-                    total_calories += item['calories']
-                    total_protein += item['protein']
-                    total_carbs += item['carbs']
-                    total_fat += item['fat']
-            
-            # Display nutritional summary
-            col1, col2, col3, col4 = st.columns(4)
-            
-            with col1:
-                st.metric("Total Calories", f"{total_calories:.0f} kcal", 
-                          f"{((total_calories/daily_calories)*100)-100:.1f}%" if daily_calories > 0 else "N/A")
-            
-            with col2:
-                st.metric("Total Protein", f"{total_protein:.1f} g", 
-                          f"{(total_protein*4/total_calories*100):.1f}% of calories" if total_calories > 0 else "N/A")
-            
-            with col3:
-                st.metric("Total Carbs", f"{total_carbs:.1f} g", 
-                          f"{(total_carbs*4/total_calories*100):.1f}% of calories" if total_calories > 0 else "N/A")
-            
-            with col4:
-                st.metric("Total Fat", f"{total_fat:.1f} g", 
-                          f"{(total_fat*9/total_calories*100):.1f}% of calories" if total_calories > 0 else "N/A")
-            
-            # Display recommendations based on health conditions
-            if selected_conditions:
-                st.subheader("Dietary Recommendations Based on Your Health Conditions")
-                for condition in selected_conditions:
-                    condition_info = data['health_conditions'][data['health_conditions']['condition'] == condition]
-                    if not condition_info.empty:
-                        st.write(f"**{condition}**")
-                        st.write(condition_info.iloc[0]['dietary_recommendation'])
-                        
-                        # Foods to avoid
-                        if 'foods_to_avoid' in condition_info.columns and not pd.isna(condition_info.iloc[0]['foods_to_avoid']):
-                            st.warning(f"Foods to avoid: {condition_info.iloc[0]['foods_to_avoid']}")
+
 
 # Home page
 def render_home_page():
