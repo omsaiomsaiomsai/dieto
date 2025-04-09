@@ -3,10 +3,157 @@ import pandas as pd
 import numpy as np
 import torch
 import os
+import random
 from auth import login, signup, is_authenticated, logout, get_current_user
 from data_preprocessing import load_data, preprocess_data
 from food_recommendation import generate_meal_plan
 from model import FoodRecommendationModel
+
+# Functions to recommend exercises and yoga poses
+def recommend_exercises(health_conditions, age, gender, bmi, activity_level):
+    """
+    Recommend exercises based on user's health profile
+    
+    Args:
+        health_conditions (list): List of user's health conditions
+        age (int): User's age
+        gender (str): User's gender
+        bmi (float): User's BMI
+        activity_level (float): User's activity level factor
+        
+    Returns:
+        list: List of recommended exercises
+    """
+    # Load exercise data
+    exercises_df = load_data('data/exercises.csv')
+    exercise_list = exercises_df['exercise_name'].tolist()
+    
+    # Determine intensity based on health conditions, age, and BMI
+    intensity = "moderate"
+    
+    if age > 65:
+        intensity = "low"
+    elif age < 30 and bmi < 25 and activity_level > 1.5:
+        intensity = "high"
+    
+    # Check for health conditions that may require low-intensity exercises
+    low_intensity_conditions = [
+        "Heart Disease", "Hypertension", "Asthma", "Arthritis", 
+        "Osteoporosis", "Recent Surgery", "Chronic Pain"
+    ]
+    
+    if any(condition in health_conditions for condition in low_intensity_conditions):
+        intensity = "low"
+    
+    # Filter exercises by intensity (if we had intensity column)
+    recommended_exercises = []
+    
+    # For demo purposes, we'll just recommend a subset of exercises
+    # In a real app, we would filter by intensity and target areas based on health conditions
+    if intensity == "low":
+        low_intensity_options = [
+            "Walking", "Swimming", "Yoga", "Tai Chi", "Gentle Stretching", 
+            "Water Aerobics", "Stationary Cycling", "Chair Exercises"
+        ]
+        # Keep only the exercises that are in our dataset
+        valid_options = [ex for ex in low_intensity_options if ex in exercise_list]
+        recommended_exercises = valid_options[:min(4, len(valid_options))]
+    
+    elif intensity == "moderate":
+        moderate_intensity_options = [
+            "Brisk Walking", "Cycling", "Swimming", "Dancing", "Hiking", 
+            "Tennis", "Resistance Training", "Yoga", "Pilates"
+        ]
+        valid_options = [ex for ex in moderate_intensity_options if ex in exercise_list]
+        recommended_exercises = valid_options[:min(4, len(valid_options))]
+    
+    else:  # high intensity
+        high_intensity_options = [
+            "Running", "HIIT", "CrossFit", "Weightlifting", "Basketball", 
+            "Soccer", "Spinning", "Kickboxing", "Mountain Biking"
+        ]
+        valid_options = [ex for ex in high_intensity_options if ex in exercise_list]
+        recommended_exercises = valid_options[:min(4, len(valid_options))]
+    
+    # If we couldn't find enough exercises in our categories, add some random ones
+    if len(recommended_exercises) < 3:
+        remaining_count = 3 - len(recommended_exercises)
+        remaining_exercises = [e for e in exercise_list if e not in recommended_exercises]
+        if remaining_exercises:
+            recommended_exercises.extend(random.sample(remaining_exercises, min(remaining_count, len(remaining_exercises))))
+    
+    return recommended_exercises
+
+def recommend_yoga_poses(health_conditions, age, bmi):
+    """
+    Recommend yoga poses based on user's health profile
+    
+    Args:
+        health_conditions (list): List of user's health conditions
+        age (int): User's age
+        bmi (float): User's BMI
+        
+    Returns:
+        list: List of recommended yoga poses
+    """
+    # Load yoga poses data
+    yoga_df = load_data('data/yoga_poses.csv')
+    yoga_list = yoga_df['pose_name'].tolist()
+    
+    # Determine difficulty based on age and BMI
+    difficulty = "intermediate"
+    
+    if age > 60 or bmi > 30:
+        difficulty = "beginner"
+    elif age < 30 and bmi < 25:
+        difficulty = "advanced"
+    
+    # Check for health conditions that may require gentle yoga
+    gentle_yoga_conditions = [
+        "Heart Disease", "Hypertension", "Arthritis", "Back Pain", 
+        "Osteoporosis", "Recent Surgery", "Chronic Pain"
+    ]
+    
+    if any(condition in health_conditions for condition in gentle_yoga_conditions):
+        difficulty = "beginner"
+    
+    # Filter yoga poses by difficulty (if we had difficulty column)
+    recommended_poses = []
+    
+    # For demo purposes, we'll just recommend a subset of poses
+    # In a real app, we would filter by difficulty and benefits related to health conditions
+    if difficulty == "beginner":
+        beginner_poses = [
+            "Mountain Pose", "Child's Pose", "Cat-Cow Stretch", "Corpse Pose",
+            "Easy Pose", "Bridge Pose", "Tree Pose", "Legs Up The Wall"
+        ]
+        valid_options = [pose for pose in beginner_poses if pose in yoga_list]
+        recommended_poses = valid_options[:min(3, len(valid_options))]
+    
+    elif difficulty == "intermediate":
+        intermediate_poses = [
+            "Downward-Facing Dog", "Warrior I", "Warrior II", "Triangle Pose",
+            "Plank Pose", "Cobra Pose", "Half Moon Pose", "Eagle Pose"
+        ]
+        valid_options = [pose for pose in intermediate_poses if pose in yoga_list]
+        recommended_poses = valid_options[:min(3, len(valid_options))]
+    
+    else:  # advanced
+        advanced_poses = [
+            "Headstand", "Handstand", "Crow Pose", "Side Plank", "King Pigeon Pose",
+            "Wheel Pose", "Firefly Pose", "Lotus Pose"
+        ]
+        valid_options = [pose for pose in advanced_poses if pose in yoga_list]
+        recommended_poses = valid_options[:min(3, len(valid_options))]
+    
+    # If we couldn't find enough poses in our categories, add some random ones
+    if len(recommended_poses) < 3:
+        remaining_count = 3 - len(recommended_poses)
+        remaining_poses = [p for p in yoga_list if p not in recommended_poses]
+        if remaining_poses:
+            recommended_poses.extend(random.sample(remaining_poses, min(remaining_count, len(remaining_poses))))
+    
+    return recommended_poses
 
 # Page configuration
 st.set_page_config(
@@ -181,20 +328,6 @@ def render_meal_plan_page():
             options=health_conditions_list
         )
         
-        # Exercise selection
-        exercise_list = data['exercises']['exercise_name'].tolist()
-        selected_exercises = st.multiselect(
-            "Select your exercises:",
-            options=exercise_list
-        )
-        
-        # Yoga poses selection
-        yoga_list = data['yoga_poses']['pose_name'].tolist()
-        selected_yoga = st.multiselect(
-            "Select your yoga practices:",
-            options=yoga_list
-        )
-        
         # Dietary preferences section
         st.subheader("Dietary Preferences")
         
@@ -274,10 +407,14 @@ def render_meal_plan_page():
                 if custom_avoided_foods:
                     custom_foods_list = [food.strip() for food in custom_avoided_foods.split(',') if food.strip()]
                 
+                # Generate recommended exercises and yoga poses based on user's health profile
+                recommended_exercises = recommend_exercises(selected_conditions, age, gender, bmi, activity_factor)
+                recommended_yoga = recommend_yoga_poses(selected_conditions, age, bmi)
+                
                 input_data = {
                     'health_conditions': selected_conditions,
-                    'exercises': selected_exercises,
-                    'yoga_poses': selected_yoga,
+                    'exercises': recommended_exercises,
+                    'yoga_poses': recommended_yoga,
                     'dietary_preferences': selected_diet,
                     'avoided_foods': avoided_foods + custom_foods_list,
                     'age': age,
@@ -302,44 +439,139 @@ def render_meal_plan_page():
     # Right column for displaying meal plan
     with col2:
         if st.session_state.meal_plan:
-            st.header("Your Personalized Meal Plan")
+            # Create main tabs for Food, Exercise, and Yoga
+            main_tabs = st.tabs(["Food Recommendations", "Exercise Recommendations", "Yoga Recommendations"])
             
-            # Create tabs for each meal
-            meals = ["Breakfast", "Lunch", "Dinner", "Snacks"]
-            tabs = st.tabs(meals)
-            
-            for i, tab in enumerate(tabs):
-                with tab:
-                    meal_type = meals[i].lower()
-                    if meal_type in st.session_state.meal_plan:
-                        meal_items = st.session_state.meal_plan[meal_type]
-                        
-                        for item in meal_items:
-                            with st.container(border=True):
-                                st.subheader(item['name'])
-                                
-                                # Create columns for details
-                                col1, col2 = st.columns([1, 2])
-                                
-                                with col1:
-                                    # Show nutritional information
-                                    st.caption("Nutritional Information (per serving)")
-                                    st.info(f"Calories: {item['calories']:.0f} kcal")
-                                    st.info(f"Protein: {item['protein']:.1f} g")
-                                    st.info(f"Carbs: {item['carbs']:.1f} g")
-                                    st.info(f"Fat: {item['fat']:.1f} g")
-                                
-                                with col2:
-                                    # Show benefits
-                                    st.caption("Health Benefits")
-                                    for benefit in item['benefits']:
-                                        st.write(f"• {benefit}")
+            # Food recommendations tab
+            with main_tabs[0]:
+                st.header("Your Personalized Meal Plan")
+                
+                # Create tabs for each meal
+                meals = ["Breakfast", "Lunch", "Dinner", "Snacks"]
+                meal_tabs = st.tabs(meals)
+                
+                for i, tab in enumerate(meal_tabs):
+                    with tab:
+                        meal_type = meals[i].lower()
+                        if meal_type in st.session_state.meal_plan:
+                            meal_items = st.session_state.meal_plan[meal_type]
+                            
+                            for item in meal_items:
+                                with st.container(border=True):
+                                    st.subheader(item['name'])
                                     
-                                    # Recommended portion
-                                    st.caption("Recommended Portion")
-                                    st.write(item['portion'])
-                    else:
-                        st.write("No recommendations for this meal.")
+                                    # Create columns for details
+                                    col1, col2 = st.columns([1, 2])
+                                    
+                                    with col1:
+                                        # Show nutritional information
+                                        st.caption("Nutritional Information (per serving)")
+                                        st.info(f"Calories: {item['calories']:.0f} kcal")
+                                        st.info(f"Protein: {item['protein']:.1f} g")
+                                        st.info(f"Carbs: {item['carbs']:.1f} g")
+                                        st.info(f"Fat: {item['fat']:.1f} g")
+                                    
+                                    with col2:
+                                        # Show benefits
+                                        st.caption("Health Benefits")
+                                        for benefit in item['benefits']:
+                                            st.write(f"• {benefit}")
+                                        
+                                        # Recommended portion
+                                        st.caption("Recommended Portion")
+                                        st.write(item['portion'])
+                        else:
+                            st.write("No recommendations for this meal.")
+            
+            # Exercise recommendations tab
+            with main_tabs[1]:
+                st.header("Recommended Exercises")
+                st.write("Based on your health profile, these exercises are recommended for you:")
+                
+                if 'exercises' in st.session_state.meal_plan:
+                    recommended_exercises = st.session_state.meal_plan['exercises']
+                    
+                    # Display recommended exercises
+                    for i, exercise in enumerate(recommended_exercises):
+                        with st.container(border=True):
+                            st.subheader(f"{i+1}. {exercise}")
+                            
+                            # Look up exercise information from dataset if available
+                            exercise_info = data['exercises'][data['exercises']['exercise_name'] == exercise]
+                            if not exercise_info.empty and 'description' in exercise_info.columns:
+                                st.write(exercise_info.iloc[0]['description'])
+                            else:
+                                # Default descriptions based on exercise type
+                                if "walking" in exercise.lower():
+                                    st.write("A low-impact exercise that's excellent for cardiovascular health and weight management.")
+                                elif "swimming" in exercise.lower():
+                                    st.write("Great full-body workout that's gentle on the joints while improving cardiovascular fitness.")
+                                elif "yoga" in exercise.lower():
+                                    st.write("Combines physical postures, breathing exercises, and meditation to improve flexibility and reduce stress.")
+                                elif "cycling" in exercise.lower():
+                                    st.write("Excellent for improving cardiovascular fitness while being easy on the joints.")
+                                elif "running" in exercise.lower():
+                                    st.write("High-impact cardio exercise that's excellent for burning calories and improving stamina.")
+                                elif "weight" in exercise.lower() or "resistance" in exercise.lower():
+                                    st.write("Helps build muscle strength and bone density while improving metabolic rate.")
+                                else:
+                                    st.write("A beneficial exercise for your health profile. Regular practice will help improve your fitness.")
+                else:
+                    st.info("No specific exercise recommendations generated.")
+                
+                # General exercise advice based on health conditions
+                st.subheader("General Exercise Advice")
+                if any(condition in selected_conditions for condition in ["Diabetes", "Hypertension", "Heart Disease"]):
+                    st.warning("Always consult your doctor before starting any exercise program. Start slowly and gradually increase intensity.")
+                
+                if "Arthritis" in selected_conditions:
+                    st.warning("Focus on low-impact exercises and avoid activities that cause pain in your joints.")
+                
+                st.write("Aim for at least 150 minutes of moderate-intensity exercise per week, spread across multiple days.")
+            
+            # Yoga recommendations tab
+            with main_tabs[2]:
+                st.header("Recommended Yoga Poses")
+                st.write("Based on your health profile, these yoga poses are recommended for you:")
+                
+                if 'yoga_poses' in st.session_state.meal_plan:
+                    recommended_yoga = st.session_state.meal_plan['yoga_poses']
+                    
+                    # Display recommended yoga poses
+                    for i, pose in enumerate(recommended_yoga):
+                        with st.container(border=True):
+                            st.subheader(f"{i+1}. {pose}")
+                            
+                            # Look up yoga pose information from dataset if available
+                            pose_info = data['yoga_poses'][data['yoga_poses']['pose_name'] == pose]
+                            if not pose_info.empty and 'description' in pose_info.columns:
+                                st.write(pose_info.iloc[0]['description'])
+                            else:
+                                # Default descriptions based on pose names
+                                if "mountain" in pose.lower():
+                                    st.write("A foundational standing pose that improves posture and body awareness.")
+                                elif "child" in pose.lower():
+                                    st.write("A resting pose that gently stretches the lower back and promotes relaxation.")
+                                elif "warrior" in pose.lower():
+                                    st.write("A standing pose that builds strength and stamina in the legs and core.")
+                                elif "triangle" in pose.lower():
+                                    st.write("Stretches and strengthens the legs, spine, and sides of the torso.")
+                                elif "tree" in pose.lower():
+                                    st.write("A balancing pose that strengthens the legs and core while improving focus.")
+                                elif "down" in pose.lower() and "dog" in pose.lower():
+                                    st.write("An inversion that strengthens the arms, shoulders, and legs while stretching the hamstrings.")
+                                else:
+                                    st.write("A beneficial yoga pose for your health profile. Regular practice will improve flexibility and well-being.")
+                else:
+                    st.info("No specific yoga pose recommendations generated.")
+                
+                # General yoga advice
+                st.subheader("General Yoga Advice")
+                st.write("Start with a few minutes of yoga daily and gradually increase duration as your body adapts.")
+                st.write("Focus on your breath and move mindfully, never forcing your body into uncomfortable positions.")
+                
+                if any(condition in selected_conditions for condition in ["Back Pain", "Arthritis", "Osteoporosis"]):
+                    st.warning("Be gentle with your practice and use props for support when needed. Avoid poses that cause pain.")
             
             # Display total nutritional breakdown
             st.subheader("Daily Nutritional Summary")

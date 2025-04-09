@@ -67,6 +67,13 @@ def generate_meal_plan(input_data, food_data):
         meal_plan['dinner'] = generate_meal_items(dinner_foods, input_data, 3)
         meal_plan['snacks'] = generate_meal_items(snack_foods, input_data, 2)
         
+        # Include recommended exercises and yoga poses in the meal plan
+        if 'exercises' in input_data:
+            meal_plan['exercises'] = input_data['exercises']
+        
+        if 'yoga_poses' in input_data:
+            meal_plan['yoga_poses'] = input_data['yoga_poses']
+        
         return meal_plan
 
 def generate_meal_items(foods_df, user_data, num_items=2):
