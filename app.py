@@ -207,7 +207,7 @@ except Exception as e:
 def render_navigation():
     with st.sidebar:
         st.image("generated-icon.png", width=100)
-        st.title("FoodWise AI")
+        st.title("dieto")
         
         # Set permanent light mode
         st.markdown("""
@@ -665,7 +665,7 @@ def render_home_page():
             st.rerun()
     else:
         st.write("""
-        ## Welcome to FoodWise AI! 
+        ## Welcome to dieto! 
         
         This application helps you create personalized meal plans based on your health conditions, 
         exercise routines, and yoga practices.
@@ -708,12 +708,12 @@ def render_home_page():
 
 # About page
 def render_about_page():
-    st.title("About FoodWise AI")
+    st.title("About dieto")
     
     st.write("""
     ## Our Mission
     
-    FoodWise AI was created to help people make better food choices based on their unique health profiles, 
+    dieto was created to help people make better food choices based on their unique health profiles, 
     exercise routines, and lifestyle factors. We believe that nutrition should be personalized, because
     everyone's body has different needs.
     
