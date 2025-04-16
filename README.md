@@ -15,10 +15,40 @@ An AI-powered nutrition and exercise recommendation system that provides persona
 ### Prerequisites
 
 - Python 3.10 or higher
-- Streamlit
 - Firebase account
 
 ### Installation
+
+#### For Windows Users
+
+1. Clone or download the repository:
+```bash
+git clone https://github.com/yourusername/foodwise-ai.git
+cd foodwise-ai
+```
+
+2. Install the required packages:
+```bash
+pip install firebase-admin numpy pandas pyrebase python-dotenv requests scikit-learn streamlit torch
+```
+
+3. Set up environment variables:
+   - Create a `.env` file in the project root
+   - Add your Firebase configuration:
+   ```
+   FIREBASE_API_KEY=your_api_key_here
+   FIREBASE_AUTH_DOMAIN=your_auth_domain_here
+   FIREBASE_PROJECT_ID=your_project_id_here
+   ```
+
+   > **Important**: Never commit your `.env` file to version control.
+
+4. Run the application:
+```bash
+streamlit run app.py
+```
+
+#### For Mac/Linux Users
 
 1. Clone the repository:
 ```bash
@@ -28,7 +58,7 @@ cd foodwise-ai
 
 2. Install the required packages:
 ```bash
-pip install -r requirements.txt
+pip install firebase-admin numpy pandas pyrebase python-dotenv requests scikit-learn streamlit torch
 ```
 
 3. Set up environment variables:

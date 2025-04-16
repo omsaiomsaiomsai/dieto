@@ -35,8 +35,8 @@ def recommend_exercises(health_conditions, age, gender, bmi, activity_level):
     Returns:
         list: List of recommended exercises
     """
-    # Load exercise data
-    exercises_df = load_data('data/exercises.csv')
+    # Load exercise data using OS-agnostic path
+    exercises_df = load_data(os.path.join('data', 'exercises.csv'))
     exercise_list = exercises_df['exercise_name'].tolist()
     
     # Determine intensity based on health conditions, age, and BMI
@@ -107,8 +107,8 @@ def recommend_yoga_poses(health_conditions, age, bmi):
     Returns:
         list: List of recommended yoga poses
     """
-    # Load yoga poses data
-    yoga_df = load_data('data/yoga_poses.csv')
+    # Load yoga poses data using OS-agnostic path
+    yoga_df = load_data(os.path.join('data', 'yoga_poses.csv'))
     yoga_list = yoga_df['pose_name'].tolist()
     
     # Determine difficulty based on age and BMI
@@ -184,11 +184,11 @@ if 'current_page' not in st.session_state:
 # Load data
 @st.cache_data
 def load_application_data():
-    # Load all required datasets
-    food_data = load_data('data/food_nutrients.csv')
-    health_conditions = load_data('data/health_conditions.csv')
-    exercises = load_data('data/exercises.csv')
-    yoga_poses = load_data('data/yoga_poses.csv')
+    # Load all required datasets using OS-agnostic paths
+    food_data = load_data(os.path.join('data', 'food_nutrients.csv'))
+    health_conditions = load_data(os.path.join('data', 'health_conditions.csv'))
+    exercises = load_data(os.path.join('data', 'exercises.csv'))
+    yoga_poses = load_data(os.path.join('data', 'yoga_poses.csv'))
     
     return {
         'food_data': food_data,
@@ -206,8 +206,8 @@ except Exception as e:
 # Navigation bar
 def render_navigation():
     with st.sidebar:
-        st.image("generated-icon.png", width=100)
-        st.title("dieto")
+        st.image(os.path.join(os.path.dirname(__file__), "generated-icon.png"), width=100)
+        st.title("FoodWise AI")
         
         # Set permanent light mode
         st.markdown("""
