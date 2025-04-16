@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import torch
 import os
 import random
 from auth import login, signup, is_authenticated, logout, get_current_user
@@ -232,7 +231,7 @@ def render_navigation():
             st.write(f"Welcome, {st.session_state.user_data.get('email', 'User')}")
             
             # Navigation menu
-            nav_options = ["Home", "Generate Meal Plan", "About", "Logout"]
+            nav_options = ["Home", "Generate Meal Plan", "Logout"]
             
             for nav in nav_options:
                 if nav == "Logout":
@@ -261,9 +260,6 @@ def render_navigation():
                     st.rerun()
             
             # Other navigation for non-logged in users
-            if st.sidebar.button("About", key="nav_about"):
-                st.session_state.current_page = "about"
-                st.rerun()
             
             if st.sidebar.button("Home", key="nav_home"):
                 st.session_state.current_page = "home"
@@ -706,36 +702,6 @@ def render_home_page():
         st.markdown("### 📊 Comprehensive")
         st.write("Complete nutritional breakdown and health benefits for each recommendation.")
 
-# About page
-def render_about_page():
-    st.title("About dieto")
-    
-    st.write("""
-    ## Our Mission
-    
-    dieto was created to help people make better food choices based on their unique health profiles, 
-    exercise routines, and lifestyle factors. We believe that nutrition should be personalized, because
-    everyone's body has different needs.
-    
-    ## How It Works
-    
-    Our system uses a sophisticated machine learning algorithm to analyze your health conditions, 
-    exercise patterns, yoga practices, and other personal metrics to generate meal plans that are 
-    specifically tailored to your needs.
-    
-    1. **Input Your Information**: Tell us about your health conditions, exercises, and yoga practices.
-    2. **Generate Recommendations**: Our AI analyzes your data and creates a personalized meal plan.
-    3. **View Nutritional Breakdown**: See comprehensive nutritional information for each meal.
-    4. **Understand Health Benefits**: Learn how each food item benefits your specific health conditions.
-    
-    ## Data Privacy
-    
-    We take your privacy seriously. All personal information is securely stored and never shared with third parties.
-    
-    ## Contact Us
-    
-    Have questions or feedback? Contact our team at support@foodwiseai.com
-    """)
 
 # Main application flow
 def main():
@@ -753,8 +719,6 @@ def main():
         else:
             st.warning("Please log in to generate a meal plan")
             render_login_page()
-    elif st.session_state.current_page == "about":
-        render_about_page()
     else:  # Default to home
         render_home_page()
 
